@@ -1,6 +1,7 @@
 import { useContext } from 'react';
 import { XMarkIcon } from '@heroicons/react/24/solid';
 import { ShoppingCartContext } from '../../Context';
+import './styles.css';
 
 const ProductDetail = () => {
   const { isProductDetailOpen, toggleProductDetail, productToShow } =
@@ -18,20 +19,22 @@ const ProductDetail = () => {
             className="h-6 w-6 text-black cursor-pointer"
             onClick={() => toggleProductDetail()}
           ></XMarkIcon>
-        </button >
+        </button>
       </div>
       <figure className="px-6">
         <img
           className="w-full h-full rounded-lg"
-          src={productToShow.image}
-          alt={productToShow.title}
+          src={productToShow?.image}
+          alt={productToShow?.title}
         />
       </figure>
-      <p className="flex flex-col p-6">
-        <span className="font-medium text-2xl mb-2">${productToShow.price}</span>
-        <span className="font-medium text-md">${productToShow.title}</span>
-        <span className="font-light text-sm">${productToShow.description}</span>
+      <p className="flex flex-col px-6 pt-6">
+        <span className="font-medium text-2xl mb-2">${productToShow?.price?.toFixed(2)}</span>
+        <span className="font-medium text-md">${productToShow?.title}</span>
       </p>
+      <div className="flex p-6 overflow-y-scroll scrollable-detail font-light text-sm">
+        ${productToShow?.description}
+      </div>
     </aside>
   );
 };
