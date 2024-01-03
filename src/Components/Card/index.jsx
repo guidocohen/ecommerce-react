@@ -1,6 +1,5 @@
-import { useContext } from 'react';
 import { PlusIcon } from '@heroicons/react/24/solid';
-import { ShoppingCartContext } from '../../Context';
+import { useShoppingCart } from '../../hooks/ShoppingCartHook';
 
 const isImage = (url) => {
   const extensionesImagen = ['jpg', 'jpeg', 'png', 'gif', 'bmp'];
@@ -9,49 +8,17 @@ const isImage = (url) => {
 };
 
 export const Card = ({ product }) => {
-  const {
-    count,
-    setCount,
-    isProductDetailOpen,
-    toggleProductDetail,
-    setProductToShow,
-    isCheckoutSideMenuOpen,
-    toggleCheckoutSideMenu,
-    cartProducts,
-    setCartProducts,
-  } = useContext(ShoppingCartContext);
+  const { addProductToCart, showProductDetail } = useShoppingCart();
 
   const addProductsToCart = (event, product) => {
     event.stopPropagation();
-
-    !isCheckoutSideMenuOpen && toggleCheckoutSideMenu();
-    isProductDetailOpen && toggleProductDetail();
-
-    const productExists = cartProducts.some((el) => el.id === product.id);
-    if (productExists) {
-      const productCart = cartProducts.find((el) => el.id === product.id);
-      productCart.quantity++;
-      productCart.price = product.price;
-      productCart.totalPrice += product.price;
-    } else {
-      setCartProducts([
-        ...cartProducts,
-        { ...product, totalPrice: product.price, quantity: 1 },
-      ]);
-    }
-    setCount(count + 1);
-  };
-
-  const showProduct = (productDetail) => {
-    !isProductDetailOpen && toggleProductDetail();
-    isCheckoutSideMenuOpen && toggleCheckoutSideMenu();
-    setProductToShow(productDetail);
+    addProductToCart(product);
   };
 
   return (
     <div
       className="bg-gray-100 cursor-pointer w-56 h-60 rounded-b-lg shadow-md mb-4"
-      onClick={() => showProduct(product)}
+      onClick={() => showProductDetail(product)}
     >
       <figure className="relative mb-2 w-full h-4/5">
         <span className="absolute bottom-0 left-0 bg-white/80 rounded-md text-black text-xs m-2 px-2 py-0.5">

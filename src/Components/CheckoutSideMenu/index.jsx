@@ -1,12 +1,43 @@
 import { useContext } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { XMarkIcon } from '@heroicons/react/24/solid';
 import { ShoppingCartContext } from '../../Context';
 import OrderCard from '../OrderCard';
 import './styles.css';
 
 const CheckoutSideMenu = () => {
-  const { isCheckoutSideMenuOpen, toggleCheckoutSideMenu, cartProducts } =
-    useContext(ShoppingCartContext);
+  const navigate = useNavigate();
+
+  const {
+    isCheckoutSideMenuOpen,
+    toggleCheckoutSideMenu,
+    cartProducts,
+    setCartProducts,
+    orders,
+    setOrders,
+  } = useContext(ShoppingCartContext);
+
+  const calcTotalPrice = (products) =>
+    products.reduce((sum, product) => sum + product.totalPrice, 0);
+
+  const handleCheckout = () => {
+    const totalPrice = calcTotalPrice(cartProducts);
+    if (totalPrice <= 0) return; // TODO: cartel para que agregue productos
+    const products = cartProducts.filter((prod) => prod.quantity > 0);
+
+    const orderToAdd = {
+      date: '01.02.23',
+      products: products,
+      totalProducts: cartProducts.length,
+      totalPrice: totalPrice,
+    };
+
+    const newOrders = [...orders, orderToAdd];
+    setOrders(newOrders);
+    setCartProducts([]);
+    toggleCheckoutSideMenu();
+    navigate('/my-last-order');
+  };
 
   return (
     <aside
@@ -22,7 +53,7 @@ const CheckoutSideMenu = () => {
           ></XMarkIcon>
         </button>
       </div>
-      <div className="overflow-y-scroll scrollable-cards px-6">
+      <div className="overflow-y-scroll scrollable-cards px-6 flex-1">
         {cartProducts.map((prod) => (
           <OrderCard
             key={prod.id}
@@ -31,10 +62,33 @@ const CheckoutSideMenu = () => {
             imageUrl={prod.image}
             price={prod.price}
             totalPrice={prod.totalPrice}
-            quantity={prod.quantity || 0}
+            quantity={prod.quantity}
+            isCheckoutSideMenu={true}
           />
         ))}
       </div>
+      {cartProducts.length > 0 ? (
+        <div className="px-6 mb-6">
+          <p className="flex justify-between items-center mb-2">
+            <span className="font-light">Total:</span>
+            <span className="font-medium text-2xl">
+              ${calcTotalPrice(cartProducts).toFixed(2)}
+            </span>
+          </p>
+          <button
+            className="bg-black py-3 text-white w-full rounded-lg"
+            onClick={() => handleCheckout()}
+          >
+            Checkout
+          </button>
+        </div>
+      ) : (
+        <div className="flex flex-col items-center justify-center h-full px-6">
+          <p className="text-gray-500">
+            Tu carrito está vacío, ¡Agrega productos para generar tu orden!
+          </p>
+        </div>
+      )}
     </aside>
   );
 };

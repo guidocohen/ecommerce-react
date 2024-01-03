@@ -1,12 +1,23 @@
 import { useContext } from 'react';
-import { ShoppingBagIcon } from '@heroicons/react/24/solid';
+import { ShoppingCartIcon } from '@heroicons/react/24/solid';
 import { navItems1, navItems2 } from './navItems';
 import { ShoppingCartContext } from '../../Context';
 import NavItem from './NavItem';
 
 const Navbar = () => {
-  const context = useContext(ShoppingCartContext);
+  const {
+    count,
+    toggleCheckoutSideMenu,
+    isCheckoutSideMenuOpen,
+    isProductDetailOpen,
+    toggleProductDetail,
+  } = useContext(ShoppingCartContext);
   const activeStyle = 'underline underline-offset-4';
+
+  const openCheckoutSideMenu = () => {
+    isProductDetailOpen && toggleProductDetail();
+    !isCheckoutSideMenuOpen && toggleCheckoutSideMenu();
+  };
 
   return (
     <nav className="flex justify-between items-center fixed z-10 top-0 w-full py-5 px-8 text-sm font-light">
@@ -24,16 +35,13 @@ const Navbar = () => {
         {navItems2.map(({ text, to, className }) => (
           <li key={text} className={className}>
             <NavItem to={to} activeStyle={activeStyle}>
-              {
-                text
-                // {link.to === '/cart' ? `${link.text} ${context.Count}` : link.text}
-              }
+              {text}
             </NavItem>
           </li>
         ))}
-        <li className="flex items-center">
-          <ShoppingBagIcon className="h-6 w-6 text-black" />
-          <div className="pl-1">{context.count}</div>
+        <li onClick={openCheckoutSideMenu} className="flex items-center">
+          <ShoppingCartIcon className="h-6 w-6 text-black" />
+          <div className="pb-3">{count}</div>
         </li>
       </ul>
     </nav>
