@@ -10,7 +10,6 @@ export const navItems1 = [
 
 export const navItems2 = [
   { text: 'My orders', to: '/my-orders' },
-  { text: 'My last order', to: '/my-last-order' },
   { text: 'My occount', to: '/my-account' },
   { text: 'Sign in', to: '/sign-in' },
 ];

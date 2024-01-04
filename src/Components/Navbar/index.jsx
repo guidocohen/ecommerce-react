@@ -40,7 +40,7 @@ const Navbar = () => {
           </li>
         ))}
         <li onClick={openCheckoutSideMenu} className="flex items-center">
-          <ShoppingCartIcon className="h-6 w-6 text-black" />
+          <ShoppingCartIcon className="h-6 w-6 text-black cursor-pointer" />
           <div className="pb-3">{count}</div>
         </li>
       </ul>

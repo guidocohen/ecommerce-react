@@ -22,6 +22,7 @@ export const useShoppingCart = () => {
       productCart.price = product.price;
       productCart.totalPrice += product.price;
     } else {
+      if (!product || !product?.price) return;
       setCartProducts([
         ...cartProducts,
         { ...product, totalPrice: product.price, quantity: 1 },

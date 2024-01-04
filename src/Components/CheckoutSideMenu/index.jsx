@@ -2,7 +2,7 @@ import { useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { XMarkIcon } from '@heroicons/react/24/solid';
 import { ShoppingCartContext } from '../../Context';
-import OrderCard from '../OrderCard';
+import ProductCard from '../ProductCard';
 import './styles.css';
 
 const CheckoutSideMenu = () => {
@@ -12,6 +12,7 @@ const CheckoutSideMenu = () => {
     isCheckoutSideMenuOpen,
     toggleCheckoutSideMenu,
     cartProducts,
+    setCount,
     setCartProducts,
     orders,
     setOrders,
@@ -21,22 +22,26 @@ const CheckoutSideMenu = () => {
     products.reduce((sum, product) => sum + product.totalPrice, 0);
 
   const handleCheckout = () => {
+    const date = new Date();
+
     const totalPrice = calcTotalPrice(cartProducts);
     if (totalPrice <= 0) return; // TODO: cartel para que agregue productos
     const products = cartProducts.filter((prod) => prod.quantity > 0);
 
     const orderToAdd = {
-      date: '01.02.23',
+      id: crypto.randomUUID(), // TODO: DB autogen id
+      date: date.toLocaleString(),
       products: products,
       totalProducts: cartProducts.length,
       totalPrice: totalPrice,
     };
 
-    const newOrders = [...orders, orderToAdd];
+    const newOrders = [...(orders || []), orderToAdd];
     setOrders(newOrders);
     setCartProducts([]);
+    setCount(0);
     toggleCheckoutSideMenu();
-    navigate('/my-last-order');
+    navigate('/my-orders/last');
   };
 
   return (
@@ -55,7 +60,7 @@ const CheckoutSideMenu = () => {
       </div>
       <div className="overflow-y-scroll scrollable-cards px-6 flex-1">
         {cartProducts.map((prod) => (
-          <OrderCard
+          <ProductCard
             key={prod.id}
             id={prod.id}
             title={prod.title}

@@ -21,7 +21,7 @@ export const ShoppingCartProvider = ({ children }) => {
   const [cartProducts, setCartProducts] = useState([]);
 
   // My Orders . Orders
-  const [orders, setOrders] = useState([{}]);
+  const [orders, setOrders] = useState();
 
   return (
     <ShoppingCartContext.Provider
