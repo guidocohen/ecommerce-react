@@ -3,34 +3,33 @@ import { useNavigate } from 'react-router-dom';
 import { XMarkIcon } from '@heroicons/react/24/solid';
 import { ShoppingCartContext } from '../../Context';
 import ProductCard from '../ProductCard';
+import { useShoppingCart } from '../../hooks/ShoppingCartHook';
 import './styles.css';
 
 const CheckoutSideMenu = () => {
   const navigate = useNavigate();
-
+  const { getOrderTotalPrice, getCartProductsTotalPrice } = useShoppingCart();
   const {
+    setCount,
     isCheckoutSideMenuOpen,
     toggleCheckoutSideMenu,
     cartProducts,
-    setCount,
     setCartProducts,
     orders,
     setOrders,
+    setSearchByTitle,
   } = useContext(ShoppingCartContext);
-
-  const calcTotalPrice = (products) =>
-    products.reduce((sum, product) => sum + product.totalPrice, 0);
 
   const handleCheckout = () => {
     const date = new Date();
 
-    const totalPrice = calcTotalPrice(cartProducts);
+    const totalPrice = getCartProductsTotalPrice(cartProducts);
     if (totalPrice <= 0) return; // TODO: cartel para que agregue productos
     const products = cartProducts.filter((prod) => prod.quantity > 0);
 
     const orderToAdd = {
       id: crypto.randomUUID(), // TODO: DB autogen id
-      date: date.toLocaleString(),
+      date: date.toLocaleString('es-AR'),
       products: products,
       totalProducts: cartProducts.length,
       totalPrice: totalPrice,
@@ -40,6 +39,7 @@ const CheckoutSideMenu = () => {
     setOrders(newOrders);
     setCartProducts([]);
     setCount(0);
+    setSearchByTitle('');
     toggleCheckoutSideMenu();
     navigate('/my-orders/last');
   };
@@ -77,7 +77,7 @@ const CheckoutSideMenu = () => {
           <p className="flex justify-between items-center mb-2">
             <span className="font-light">Total:</span>
             <span className="font-medium text-2xl">
-              ${calcTotalPrice(cartProducts).toFixed(2)}
+              ${getOrderTotalPrice(cartProducts).toFixed(2)}
             </span>
           </p>
           <button

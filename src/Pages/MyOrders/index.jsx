@@ -8,14 +8,24 @@ const MyOrders = () => {
 
   return (
     <>
-      <div className="flex items-center justify-center relative w-80">
-        <h1>My Orders</h1>
+      <div className="flex items-center justify-center relative">
+        <h1 className="font-medium text-xl mb-4">My Orders</h1>
       </div>
-      {orders?.map(({ id, totalPrice, totalProducts }) => (
-        <Link key={id} to={`/my-orders/${id}`}>
-          <OrderCard id={id} totalPrice={totalPrice} totalProducts={totalProducts} />
-        </Link>
-      ))}
+      <div className="flex items-center justify-center container">
+        <div className="grid grid-cols-1">
+          <div className="flex flex-col items-center">
+            {orders?.map(({ id, totalPrice, totalProducts, date }) => (
+              <Link key={id} to={`/my-orders/${id}`}>
+                <OrderCard
+                  totalPrice={totalPrice}
+                  totalProducts={totalProducts}
+                  date={date}
+                />
+              </Link>
+            ))}
+          </div>
+        </div>
+      </div>
     </>
   );
 };

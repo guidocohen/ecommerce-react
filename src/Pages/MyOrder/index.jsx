@@ -3,9 +3,11 @@ import { Link } from 'react-router-dom';
 import { ChevronDoubleLeftIcon } from '@heroicons/react/24/solid';
 import ProductCard from '../../Components/ProductCard';
 import { ShoppingCartContext } from '../../Context';
+import { useShoppingCart } from '../../hooks/ShoppingCartHook';
 
 const MyOrder = () => {
   const { orders } = useContext(ShoppingCartContext);
+  const { getOrderTotalQuantity, getOrderTotalPrice } = useShoppingCart();
   const currentPath = window.location.pathname;
   let uuid = currentPath.split('/').pop();
 
@@ -19,9 +21,6 @@ const MyOrder = () => {
   }
 
   const orderProducts = orderToShow?.products || [];
-
-  const totalQuantity = orderProducts.reduce((total, prod) => total + prod.quantity, 0);
-  const totalPrice = orderProducts.reduce((total, prod) => total + prod.totalPrice, 0);
 
   return (
     <>
@@ -46,9 +45,9 @@ const MyOrder = () => {
         ))}
       </div>
       <div>
-        <p>Items: {totalQuantity}</p>
-        <p>Products: {orderProducts.length}</p>
-        <p>Total Price: ${totalPrice}</p>
+        <p>Items: {getOrderTotalQuantity(orderProducts)}</p>
+        <p>Articles: {orderProducts.length}</p>
+        <p>Total Price: ${getOrderTotalPrice(orderProducts).toFixed(2)}</p>
       </div>
     </>
   );

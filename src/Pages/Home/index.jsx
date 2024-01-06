@@ -1,32 +1,41 @@
+import { useContext, useEffect } from 'react';
+import { useParams } from 'react-router-dom';
 import { Card } from '../../Components/Card';
-import { useState, useEffect } from 'react';
-import { apiUrl } from '../../api'
 import ProductDetail from '../../Components/ProductDetail';
+import { ShoppingCartContext } from '../../Context';
 
 export const Home = () => {
-  const [items, setItems] = useState(null);
+  const { searchByTitle, setSearchByTitle, filteredItems, setSearchByCategory } =
+    useContext(ShoppingCartContext);
+
+  const { category } = useParams();
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await fetch(`${apiUrl}/products`);
-        const data = await response.json();
-        setItems(data);
-      } catch (error) {
-        console.error(`Oh no, ocurrió un error: ${error}`);
-      }
+    setSearchByCategory(category || '');
+  }, [category, setSearchByCategory]);
+
+  const renderView = () => {
+    if (!filteredItems) return <p>Loading...</p>;
+    if (filteredItems.length > 0) {
+      return filteredItems.map((item) => <Card key={item.id} product={item} />);
+    } else {
+      return <p>No Results Found</p>;
     }
-    fetchData();
-  }, []);
+  };
 
   return (
     <>
-      <div className='grid gap-4 grid-cols-4 w-full max-w-screen-lg'>
-        {items?.map((item) => (
-          <Card key={item.id} product={item} />
-        ))}
-        <Card />
+      <div className="flex items-center justify-center relative w-80 mb-4">
+        <h1 className="font-medium text-xl">Exclusive Products</h1>
       </div>
+      <input
+        type="text"
+        value={searchByTitle}
+        placeholder="Search a product"
+        className="rounded-lg border border-black w-80 p-4 mb-4 focus:outline-none"
+        onChange={(event) => setSearchByTitle(event.target.value)}
+      />
+      <div className="grid gap-4 grid-cols-4 w-full max-w-screen-lg">{renderView()}</div>
       <ProductDetail />
     </>
   );

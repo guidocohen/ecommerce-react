@@ -39,9 +39,15 @@ export const useShoppingCart = () => {
     setProductToShow(productDetail);
   };
 
+  const getCartProductsTotalPrice = (cartProducts) => cartProducts.reduce((total, prod) => total + prod.totalPrice, 0);
+  const getOrderTotalQuantity = (orderProducts) => orderProducts.reduce((total, prod) => total + prod.quantity, 0);
+  const getOrderTotalPrice = (orderProducts) => orderProducts.reduce((total, prod) => total + prod.totalPrice, 0);
+
   return {
-    count,
     addProductToCart,
     showProductDetail,
+    getOrderTotalPrice,
+    getOrderTotalQuantity,
+    getCartProductsTotalPrice,
   };
 };
